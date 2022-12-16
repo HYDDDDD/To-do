@@ -11,7 +11,7 @@ function App() {
     e.preventDefault();
 
     if (item) {
-      setItems([...items, { id: Date.now(), item, isDone: false }]);
+      setItems([...items, { id: Date.now(), todo: item, isDone: false }]);
       setItem("");
     }
   };

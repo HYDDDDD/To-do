@@ -1,31 +1,83 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Item } from "../../model";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { MdOutlineDone } from "react-icons/md";
-// import './index.css';
 import "../../SingleTodo.css";
 
 type Props = {
-  elementItem: Item;
+  item: Item;
   items: Item[];
   setItems: React.Dispatch<React.SetStateAction<Item[]>>;
 };
 
-function SingleTodo({ elementItem, items, setItems }: Props) {
+function SingleTodo({ item, items, setItems }: Props) {
+  const [edit, setEdit] = useState<boolean>(false);
+  const [editItem, setEditItem] = useState<string>(item.todo);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleDone = (id: number) => {
+    setItems(
+      items.map((todo) =>
+        todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
+      )
+    );
+  };
+
+  const handleDelete = (id: number) => {
+    // if todo.id === id choose item this.
+    setItems(items.filter((todo) => todo.id !== id));
+  };
+
+  const handleEdit = (e: React.FormEvent, id: number) => {
+    e.preventDefault();
+
+    setItems(
+      items.map((todo) => (todo.id === id ? { ...todo, todo: editItem } : todo))
+    );
+    setEdit(false);
+  };
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [edit]);
+
   return (
     //lg => computer , md => ipad , sm => mobile
-    <form className="flex w-auto rounded-md p-5 mt-4 bg-orange-500 ">
-      <span className="flex-1 p-1 border-none text-xl focus:outline-none">
-        {elementItem.item}
-      </span>
+    <form
+      className="flex w-2/3 rounded-md p-5 mt-4 bg-orange-500 "
+      onSubmit={(e) => handleEdit(e, item.id)}
+    >
+      {edit ? (
+        <input
+          value={editItem}
+          ref={inputRef}
+          onChange={(e) => setEditItem(e.target.value)}
+          className="flex-1 p-1 border-none text-xl focus:outline-none"
+        />
+      ) : item.isDone ? (
+        <s className="flex-1 p-1 border-none text-xl focus:outline-none">
+          {item.todo}
+        </s>
+      ) : (
+        <span className="flex-1 p-1 border-none text-xl focus:outline-none">
+          {item.todo}
+        </span>
+      )}
 
-      <span className="icon">
+      <span
+        className="icon"
+        onClick={() => {
+          if (!edit && !item.isDone) {
+            setEdit(!edit);
+          }
+        }}
+      >
         <AiFillEdit />
       </span>
-      <span className="icon">
+      <span className="icon" onClick={() => handleDelete(item.id)}>
         <AiFillDelete />
       </span>
-      <span className="icon">
+      <span className="icon" onClick={() => handleDone(item.id)}>
         <MdOutlineDone />
       </span>
     </form>

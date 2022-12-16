@@ -27,7 +27,7 @@ const InputFeild: React.FC<Props> = ({ item, setItem, handleAdd }) => {
       />
       <button
         type="submit"
-        className="absolute w-12 h-12 m-2 rounded-3xl right-0 border-none text-sm transition bg-orange-600 focus:bg-green-400 focus:shadow-md focus:outline-none"
+        className="absolute w-12 h-12 m-2 rounded-3xl right-0 border-none text-sm transition bg-orange-600 active:bg-green-400 active:transform active:scale-50 focus:shadow-md focus:outline-none"
       >
         Go
       </button>

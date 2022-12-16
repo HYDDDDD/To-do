@@ -13,7 +13,7 @@ function TodoList({ items, setItems }: Props) {
       {items.map((element) => (
         <SingleTodo
           key={element.id}
-          elementItem={element}
+          item={element}
           items={items}
           setItems={setItems}
         />
