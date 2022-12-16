@@ -38,13 +38,14 @@ function SingleTodo({ item, items, setItems }: Props) {
   };
 
   useEffect(() => {
+    //curser input when click edit.
     inputRef.current?.focus();
   }, [edit]);
 
   return (
     //lg => computer , md => ipad , sm => mobile
     <form
-      className="flex w-2/3 rounded-md p-5 mt-4 bg-orange-500 "
+      className="flex transition rounded-md p-5 mt-4 bg-orange-500 hover:shadow-md hover:shadow-black hover:scale-105"
       onSubmit={(e) => handleEdit(e, item.id)}
     >
       {edit ? (
