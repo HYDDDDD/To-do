@@ -3,14 +3,16 @@ import { Item } from "../../model";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { MdOutlineDone } from "react-icons/md";
 import "../../SingleTodo.css";
+import { Draggable } from "react-beautiful-dnd";
 
 type Props = {
+  index: number;
   item: Item;
   items: Item[];
   setItems: React.Dispatch<React.SetStateAction<Item[]>>;
 };
 
-function SingleTodo({ item, items, setItems }: Props) {
+function SingleTodo({ index, item, items, setItems }: Props) {
   const [edit, setEdit] = useState<boolean>(false);
   const [editItem, setEditItem] = useState<string>(item.todo);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,44 +46,53 @@ function SingleTodo({ item, items, setItems }: Props) {
 
   return (
     //lg => computer , md => ipad , sm => mobile
-    <form
-      className="flex transition rounded-md p-5 mt-4 bg-orange-500 hover:shadow-md hover:shadow-black hover:scale-105"
-      onSubmit={(e) => handleEdit(e, item.id)}
-    >
-      {edit ? (
-        <input
-          value={editItem}
-          ref={inputRef}
-          onChange={(e) => setEditItem(e.target.value)}
-          className="flex-1 p-1 border-none text-xl focus:outline-none"
-        />
-      ) : item.isDone ? (
-        <s className="flex-1 p-1 border-none text-xl focus:outline-none">
-          {item.todo}
-        </s>
-      ) : (
-        <span className="flex-1 p-1 border-none text-xl focus:outline-none">
-          {item.todo}
-        </span>
-      )}
+    <Draggable draggableId={item.id.toString()} index={index}>
+      {(provided, snapshot) => (
+        <form
+          className={`flex transition rounded-md p-5 mt-4 bg-orange-400 hover:shadow-md hover:shadow-black hover:scale-105 ${
+            snapshot.isDragging ? "drag" : ""
+          }`}
+          onSubmit={(e) => handleEdit(e, item.id)}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+        >
+          {edit ? (
+            <input
+              value={editItem}
+              ref={inputRef}
+              onChange={(e) => setEditItem(e.target.value)}
+              className="flex-1 p-1 border-none text-xl focus:outline-none"
+            />
+          ) : item.isDone ? (
+            <s className="flex-1 p-1 border-none text-xl focus:outline-none">
+              {item.todo}
+            </s>
+          ) : (
+            <span className="flex-1 p-1 border-none text-xl focus:outline-none">
+              {item.todo}
+            </span>
+          )}
 
-      <span
-        className="icon"
-        onClick={() => {
-          if (!edit && !item.isDone) {
-            setEdit(!edit);
-          }
-        }}
-      >
-        <AiFillEdit />
-      </span>
-      <span className="icon" onClick={() => handleDelete(item.id)}>
-        <AiFillDelete />
-      </span>
-      <span className="icon" onClick={() => handleDone(item.id)}>
-        <MdOutlineDone />
-      </span>
-    </form>
+          <span
+            className="icon"
+            onClick={() => {
+              if (!edit && !item.isDone) {
+                setEdit(!edit);
+              }
+            }}
+          >
+            <AiFillEdit />
+          </span>
+          <span className="icon" onClick={() => handleDelete(item.id)}>
+            <AiFillDelete />
+          </span>
+          <span className="icon" onClick={() => handleDone(item.id)}>
+            <MdOutlineDone />
+          </span>
+        </form>
+      )}
+    </Draggable>
   );
 }
 
